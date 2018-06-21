@@ -14,7 +14,7 @@ graph_data = Graph()
 graph_data.debug_create_test_data()
 print(graph_data.vertexes)
 
-N = 10
+N = len(graph_data.vertexes)
 node_indices = list(range(N))
 
 # debug_pallete = []
@@ -27,18 +27,28 @@ color_list = []
 for vertex in graph_data.vertexes:
     color_list.append(vertex.color)
 
-plot = figure(title='Graph Layout Demonstration', x_range=(-1.1, 1.1), y_range=(-1.1, 1.1),
+plot = figure(title='Graph Layout Demonstration', x_range=(0, 500), y_range=(0, 500),
               tools='', toolbar_location=None)
 
 graph = GraphRenderer()
 
 graph.node_renderer.data_source.add(node_indices, 'index')
 graph.node_renderer.data_source.add(color_list, 'color')
-graph.node_renderer.glyph = Oval(height=0.1, width=0.2, fill_color='color')
+graph.node_renderer.glyph = Oval(height=10, width=10, fill_color='color')
+
+# this is drawing the edges from start to end
+start_indexes = []
+end_indexes = []
+
+for start_index, vertex in enumerate(graph_data.vertexes):
+    for e in vertex.edges:
+        start_indexes.append(start_index)
+        end_indexes.append(graph_data.vertexes.index(e.destination))
 
 graph.edge_renderer.data_source.data = dict(
-    start=[0]*N,
-    end=node_indices)
+    start=start_indexes,  # start=[0]*N,
+    end=end_indexes  # end=node_indices
+)
 
 # start of layout code
 x = [v.pos['x'] for v in graph_data.vertexes]
